@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.glassmorphism {
+  background: rgba(0, 0, 0, 0.3); /* White with transparency */
+  backdrop-filter: blur(10px); /* Apply blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Blur effect for Safari */
+  /* border: 1px solid rgba(0, 0, 0, 0.4);  */
+  border-radius: 15px; /* Rounded corners */
+}
+
+.white-glassmorphism {
+  background: rgba(255, 255, 255, 0.2); /* White with transparency */
+  backdrop-filter: blur(10px); /* Apply blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Blur effect for Safari */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Light border for emphasis */
+  border-radius: 15px; /* Rounded corners */
+}
+
+.lexend-100 {
+  font-family: "Lexend", serif;
+  font-optical-sizing: auto;
+  /* font-weight: 100; */
+  font-style: normal;
+}
+
+body {
+  font-family: "Lexend", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
