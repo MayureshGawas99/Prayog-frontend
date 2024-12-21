@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import { ToastContainer } from "react-toastify";
 import ProfilePage from "./pages/ProfilePage";
 import ProjectPage from "./pages/ProjectPage";
+import { Tooltip } from "react-tooltip";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/project/:projectId" element={<ProjectPage />} />
       </Routes>
       <ToastContainer position="bottom-right" autoClose={3000} />
+      <Tooltip id="my-tooltip" />
     </div>
   );
 }

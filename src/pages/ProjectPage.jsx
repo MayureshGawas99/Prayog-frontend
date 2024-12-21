@@ -5,6 +5,7 @@ import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 import { FaHeart, FaRegCommentAlt } from "react-icons/fa";
 import Loading from "../components/Loading";
+import CommentSection from "../components/CommentSection";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -99,11 +100,40 @@ const ProjectPage = () => {
           {project?.file && (
             <div className="mt-4 md:mt-8">
               <p className="text-lg font-semibold">Paper:</p>
-              <iframe
+              {/* <iframe
                 src={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
                 title="PDF Viewer"
                 className="w-full h-[30rem] block "
-              ></iframe>
+              ></iframe> */}
+              <object
+                data={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
+                // data={pdfUrl}
+                type="application/pdf"
+                className="w-full h-[10rem] md:h-[30rem] flex items-center"
+              >
+                <p>
+                  Your browser does not support PDF viewing.{" "}
+                  <a
+                    className="text-indigo-500"
+                    href={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
+                  >
+                    Click here to Download the PDF
+                  </a>
+                  .
+                </p>
+              </object>
+
+              {/* <embed
+                src={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
+                type="application/pdf"
+                width="100%"
+                height="100%"
+              /> */}
+              {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                <Viewer
+                  fileUrl={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
+                />
+              </Worker> */}
             </div>
           )}
 
@@ -166,6 +196,7 @@ const ProjectPage = () => {
             </div>
           </div>
           <hr className="h-px my-4 bg-gray-200 border-0 md:my-8 " />
+          <CommentSection project={project} />
         </div>
       )}
     </div>

@@ -9,6 +9,9 @@ const AppContext = createContext();
 // Create a provider component to wrap your app
 const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState();
+  const [fetchCommentsAgain, setFetchCommentsAgain] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
+
   const [jwt, setJWT] = useState(localStorage.getItem("jwt") || "");
   return (
     <AppContext.Provider
@@ -17,6 +20,10 @@ const AppContextProvider = ({ children }) => {
         setUser,
         jwt,
         setJWT,
+        fetchCommentsAgain,
+        setFetchCommentsAgain,
+        commentCount,
+        setCommentCount,
       }}
     >
       {children}
