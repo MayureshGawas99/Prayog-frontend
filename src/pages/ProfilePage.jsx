@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { IoMdPersonAdd } from "react-icons/io";
+import { IoMdAdd, IoMdPersonAdd } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 
 const ProfilePage = () => {
-  const { jwt } = useContext(AppContext);
+  const { jwt, user } = useContext(AppContext);
   const [userProjects, setUserProjects] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
   const [userCollabProjects, setUserCollabProjects] = useState([]);
@@ -92,19 +92,31 @@ const ProfilePage = () => {
               <div className="mb-2">
                 <div className="flex flex-row items-center justify-between">
                   <p className="text-2xl font-bold">{userDetails?.name}</p>
-                  <div className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300">
-                    <MdEdit size={20} className="text-indigo-600" />
-                  </div>
+                  {userDetails?._id === user?._id && (
+                    <div className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300">
+                      <MdEdit size={20} className="text-indigo-600" />
+                    </div>
+                  )}
                 </div>
                 <p className="text-indigo-600">{userDetails?.headline}</p>
               </div>
-              <button
-                type="button"
-                className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
-              >
-                <span>Connect</span>
-                <IoMdPersonAdd size={20} />
-              </button>
+              {userDetails?._id === user?._id ? (
+                <button
+                  type="button"
+                  className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
+                >
+                  <span>Add Project</span>
+                  <IoMdAdd size={20} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
+                >
+                  <span>Connect</span>
+                  <IoMdPersonAdd size={20} />
+                </button>
+              )}
               <div className="mb-2">
                 <p className="text-lg font-semibold">Email:</p>
                 <p className="text-gray-500">{userDetails?.email}</p>
@@ -129,13 +141,16 @@ const ProfilePage = () => {
                     {skill}
                   </span>
                 ))}
+                {userDetails?.skills?.length === 0 && (
+                  <p className="text-gray-500">No skills added</p>
+                )}
               </div>
             </div>
             <div className="flex-grow">
               <div className="mb-2">
                 <p className="text-lg font-semibold">About:</p>
                 <p className="text-justify text-gray-500">
-                  {userDetails?.about}
+                  {userDetails?.about || "No about added"}
                 </p>
               </div>
               <div className="mb-2">
@@ -159,19 +174,19 @@ const ProfilePage = () => {
                         {project?.description}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {project?.techstacks?.map((tech, ind) => {
-                          if (ind > 1) return null;
+                        {project?.techstacks?.map((tech, index) => {
+                          if (index > 1) return null;
                           return (
-                            <div
-                              key={ind}
-                              className="px-2 py-0.5 text-xs font-bold text-indigo-600 bg-indigo-200 border border-indigo-600 rounded-lg lg:text-sm"
+                            <span
+                              key={index}
+                              className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-1 md:mr-2 px-2.5 py-0.5 rounded"
                             >
                               {tech}
-                            </div>
+                            </span>
                           );
                         })}
                         {project?.techstacks?.length > 2 && (
-                          <span className="px-2 py-0.5 text-xs font-bold text-indigo-600 bg-indigo-200 border border-indigo-600 rounded-lg lg:text-sm">
+                          <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-1 md:mr-2 px-2.5 py-0.5 rounded">
                             +{project?.techstacks?.length - 2}
                           </span>
                         )}
@@ -206,19 +221,19 @@ const ProfilePage = () => {
                         {project?.description}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {project?.techstacks?.map((tech, ind) => {
-                          if (ind > 1) return null;
+                        {project?.techstacks?.map((tech, index) => {
+                          if (index > 1) return null;
                           return (
-                            <div
-                              key={ind}
-                              className="px-2 py-0.5 text-xs font-bold text-indigo-600 bg-indigo-200 border border-indigo-600 rounded-lg lg:text-sm"
+                            <span
+                              key={index}
+                              className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-1 md:mr-2 px-2.5 py-0.5 rounded"
                             >
                               {tech}
-                            </div>
+                            </span>
                           );
                         })}
                         {project?.techstacks?.length > 2 && (
-                          <span className="px-2 py-0.5 text-xs font-bold text-indigo-600 bg-indigo-200 border border-indigo-600 rounded-lg lg:text-sm">
+                          <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-1 md:mr-2 px-2.5 py-0.5 rounded">
                             +{project?.techstacks?.length - 2}
                           </span>
                         )}

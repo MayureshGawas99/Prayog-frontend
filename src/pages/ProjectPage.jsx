@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { FaHeart, FaRegCommentAlt } from "react-icons/fa";
 import Loading from "../components/Loading";
 import CommentSection from "../components/CommentSection";
+import { MdOutlineFileDownload } from "react-icons/md";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -99,12 +100,23 @@ const ProjectPage = () => {
 
           {project?.file && (
             <div className="mt-4 md:mt-8">
-              <p className="text-lg font-semibold">Paper:</p>
+              <div className="flex justify-between">
+                <p className="text-lg font-semibold">Paper:</p>
+                <MdOutlineFileDownload
+                  size={24}
+                  className="cursor-pointer md:hidden"
+                  onClick={() =>
+                    window.open(
+                      `${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`
+                    )
+                  }
+                />
+              </div>
               <object
                 data={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
                 // data={pdfUrl}
                 type="application/pdf"
-                className="w-full h-[10rem] md:h-[30rem] flex items-center"
+                className="w-full h-[10rem] md:h-[30rem] flex items-center mt-2"
               >
                 <p>
                   Your browser does not support PDF viewing.{" "}
