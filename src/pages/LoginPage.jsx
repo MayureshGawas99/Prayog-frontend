@@ -24,13 +24,13 @@ const LoginPage = () => {
         { email, password }
       );
       toast.success("Login Successful");
-      localStorage.setItem("jwt", data.token);
-      setJWT(data.token);
+      localStorage.setItem("jwt", data?.token);
+      setJWT(data?.token);
       console.log(data);
       navigate("/");
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

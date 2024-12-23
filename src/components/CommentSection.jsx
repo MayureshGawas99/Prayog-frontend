@@ -81,7 +81,7 @@ function CommentSection({ project }) {
   }, [project, currentPage, fetchCommentsAgain]);
 
   return (
-    <div className="bg-white ">
+    <div className="mb-8 bg-white">
       <h2 className="mb-4 text-lg font-semibold">Comments:</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex gap-2 mb-4">
@@ -123,7 +123,7 @@ function CommentSection({ project }) {
           })}
           {currentPage < totalPages && (
             <div
-              className="font-bold cursor-pointer"
+              className="text-xs font-semibold text-gray-500 cursor-pointer hover:text-indigo-500"
               onClick={() => setCurrentPage((prev) => prev + 1)}
             >
               See More Comments

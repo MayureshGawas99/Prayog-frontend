@@ -100,11 +100,6 @@ const ProjectPage = () => {
           {project?.file && (
             <div className="mt-4 md:mt-8">
               <p className="text-lg font-semibold">Paper:</p>
-              {/* <iframe
-                src={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
-                title="PDF Viewer"
-                className="w-full h-[30rem] block "
-              ></iframe> */}
               <object
                 data={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
                 // data={pdfUrl}
@@ -162,6 +157,7 @@ const ProjectPage = () => {
               <p className="text-lg font-semibold">Collaborators:</p>
               {project?.collaborators?.map((collaborator) => (
                 <div
+                  key={collaborator?._id}
                   onClick={() => navigate(`/profile/${collaborator?._id}`)}
                   className="flex flex-row items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 "
                 >

@@ -8,13 +8,45 @@ import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 
 const ProfilePage = () => {
-  const { user, jwt } = useContext(AppContext);
+  const { jwt } = useContext(AppContext);
   const [userProjects, setUserProjects] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
   const [userCollabProjects, setUserCollabProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const { userId } = useParams();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!jwt) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/user/details/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
+        console.log(data);
+        setUserDetails(data);
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     const fetchRecentProjects = async () => {
@@ -34,7 +66,6 @@ const ProfilePage = () => {
         console.log(data);
       } catch (error) {
         console.log(error);
-        toast.error(error?.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -52,7 +83,7 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center gap-8 mt-8 sm:flex-row sm:items-start ">
             <div className="w-[20rem] h-[20rem]  flex-shrink-0">
               <img
-                src={user?.pic}
+                src={userDetails?.pic}
                 alt="user profile pic"
                 className="object-cover w-[20rem] h-[20rem] rounded-xl "
               />
@@ -60,12 +91,12 @@ const ProfilePage = () => {
             <div className="flex-grow">
               <div className="mb-2">
                 <div className="flex flex-row items-center justify-between">
-                  <p className="text-2xl font-bold">{user?.name}</p>
+                  <p className="text-2xl font-bold">{userDetails?.name}</p>
                   <div className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300">
                     <MdEdit size={20} className="text-indigo-600" />
                   </div>
                 </div>
-                <p className="text-indigo-600">{user?.headline}</p>
+                <p className="text-indigo-600">{userDetails?.headline}</p>
               </div>
               <button
                 type="button"
@@ -76,12 +107,12 @@ const ProfilePage = () => {
               </button>
               <div className="mb-2">
                 <p className="text-lg font-semibold">Email:</p>
-                <p className="text-gray-500">{user?.email}</p>
+                <p className="text-gray-500">{userDetails?.email}</p>
               </div>
-              {user?.organization && (
+              {userDetails?.organization && (
                 <div className="mb-2">
                   <p className="text-lg font-semibold">Organization:</p>
-                  <p className="text-gray-500">{user?.organization}</p>
+                  <p className="text-gray-500">{userDetails?.organization}</p>
                 </div>
               )}
             </div>
@@ -90,9 +121,9 @@ const ProfilePage = () => {
             <div className="w-full xl:w-[20rem] flex-shrink-0">
               <p className="mb-2 text-lg font-semibold">Skills:</p>
               <div className="flex flex-wrap gap-2">
-                {user?.skills.map((skill) => (
+                {userDetails?.skills?.map((skill, ind) => (
                   <span
-                    key={skill}
+                    key={ind}
                     className="px-2 py-1 text-sm font-bold text-indigo-600 bg-indigo-200 border border-indigo-600 rounded-lg"
                   >
                     {skill}
@@ -103,12 +134,15 @@ const ProfilePage = () => {
             <div className="flex-grow">
               <div className="mb-2">
                 <p className="text-lg font-semibold">About:</p>
-                <p className="text-justify text-gray-500">{user?.about}</p>
+                <p className="text-justify text-gray-500">
+                  {userDetails?.about}
+                </p>
               </div>
               <div className="mb-2">
                 <p className="mb-2 text-lg font-semibold">Projects:</p>
-                {userProjects.map((project) => (
+                {userProjects?.map((project) => (
                   <div
+                    key={project._id}
                     onClick={() => navigate(`/project/${project._id}`)}
                     className="flex flex-row gap-4 p-4 mb-4 transition-transform ease-in-out transform border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg hover:scale-105"
                   >
@@ -155,6 +189,7 @@ const ProfilePage = () => {
                 </p>
                 {userCollabProjects?.map((project) => (
                   <div
+                    key={project._id}
                     onClick={() => navigate(`/project/${project._id}`)}
                     className="flex flex-row gap-4 p-4 mb-4 transition-transform ease-in-out transform border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg hover:scale-105"
                   >

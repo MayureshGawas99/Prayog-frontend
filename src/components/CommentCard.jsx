@@ -271,7 +271,7 @@ function CommentCard({ comment, replyDepth, projectId }) {
               <div className="flex justify-start">
                 <button
                   type="submit"
-                  class="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 "
+                  className="inline-flex items-center justify-center px-5 py-3 text-base font-bold text-center text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 "
                 >
                   {state === "reply" ? "Reply" : "Edit"}
                 </button>

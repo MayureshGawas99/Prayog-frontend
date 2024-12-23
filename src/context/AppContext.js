@@ -11,6 +11,7 @@ const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [fetchCommentsAgain, setFetchCommentsAgain] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const [jwt, setJWT] = useState(localStorage.getItem("jwt") || "");
   return (
@@ -24,6 +25,8 @@ const AppContextProvider = ({ children }) => {
         setFetchCommentsAgain,
         commentCount,
         setCommentCount,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

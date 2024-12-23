@@ -11,7 +11,8 @@ import axios from "axios";
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user, setUser, jwt, setJWT } = useContext(AppContext);
+  const { user, setUser, jwt, setJWT, activeTab } = useContext(AppContext);
+
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -153,27 +154,38 @@ const NavBar = () => {
             <li>
               <Link
                 to={"/"}
-                className="block px-3 py-2 text-white bg-indigo-700 rounded md:bg-transparent md:text-indigo-700 md:p-0 "
-                aria-current="page"
+                className={
+                  activeTab === "home"
+                    ? "block px-3 py-2 text-white bg-indigo-700 rounded md:bg-transparent md:text-indigo-700 md:p-0"
+                    : "block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+                }
               >
                 Home
               </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+              <Link
+                to="/projects"
+                className={
+                  activeTab === "projects"
+                    ? "block px-3 py-2 text-white bg-indigo-700 rounded md:bg-transparent md:text-indigo-700 md:p-0"
+                    : "block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+                }
               >
                 Projects
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+              <Link
+                to="/connections"
+                className={
+                  activeTab === "connections"
+                    ? "block px-3 py-2 text-white bg-indigo-700 rounded md:bg-transparent md:text-indigo-700 md:p-0"
+                    : "block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+                }
               >
                 Connections
-              </a>
+              </Link>
             </li>
           </ul>
           {user ? (
