@@ -2,11 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import DeleteCommentModaL from "./DeleteCommentModal";
 import { AppContext } from "../context/AppContext";
-import axios from "axios";
 import Loading from "./Loading";
 import { toast } from "react-toastify";
+import DeleteCommentModal from "../modals/DeleteCommentModal";
 
 function CommentCard({ comment, replyDepth, projectId }) {
   const [replyOpen, setReplyOpen] = useState(false);
@@ -17,19 +16,13 @@ function CommentCard({ comment, replyDepth, projectId }) {
   const [openReplyBox, setOpenReplyBox] = useState(false);
   const {
     user,
-    jwt,
     fetchCommentsAgain,
     setFetchCommentsAgain,
     commentCount,
     setCommentCount,
+    commonAxios,
   } = useContext(AppContext);
-  const commonAxios = axios.create({
-    baseURL: process.env.REACT_APP_BACKEND_URL,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-  });
+
   const [state, setState] = useState("reply");
   const [replies, setReplies] = useState([]);
 
@@ -118,8 +111,7 @@ function CommentCard({ comment, replyDepth, projectId }) {
         newContent: reply,
         commentId: comment._id,
       };
-      const data = await commonAxios.put("/api/comment/edit", body);
-      console.log(data);
+      await commonAxios.put("/api/comment/edit", body);
       setFetchCommentsAgain(!fetchCommentsAgain);
     } catch (error) {
       console.log(error);
@@ -140,7 +132,7 @@ function CommentCard({ comment, replyDepth, projectId }) {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault();
     await editOrReplyComment(comment._id);
   };
 
@@ -201,7 +193,7 @@ function CommentCard({ comment, replyDepth, projectId }) {
                   <div className="pl-2 text-base">{commentLikeCount}</div>
                 </div>
                 <div
-                  className="pl-5 text-sm cursor-pointer"
+                  className="pl-2 text-sm cursor-pointer "
                   onClick={() => {
                     if (openReplyBox && state === "edit") {
                       // setReply("");
@@ -215,29 +207,19 @@ function CommentCard({ comment, replyDepth, projectId }) {
                     setOpenReplyBox(!openReplyBox);
                   }}
                 >
-                  Reply
+                  <div className="p-1 rounded-md hover:bg-gray-200">Reply</div>
                 </div>
                 {comment?.content !== "" &&
                   comment?.author._id === user?._id && (
                     <>
-                      {/* <div
-                        className="pl-5 text-sm cursor-pointer"
-                          onClick={() => {
-                            setDeleteId(comment?._id);
-                            setIsDisclaimerOpen(true);
-                          }}
-                      >
-                        Delete
-                      </div> */}
-                      <DeleteCommentModaL
+                      <DeleteCommentModal
                         commentId={comment._id}
-                        handleDelete={deleteComment}
+                        handleDeleteComment={deleteComment}
                       />
                       <div
-                        className="pl-5 text-sm cursor-pointer"
+                        className="pl-2 text-sm cursor-pointer"
                         onClick={() => {
                           if (openReplyBox && state === "reply") {
-                            // setReply("");
                             setReply(comment.content);
                             setState("edit");
                             return;
@@ -247,7 +229,9 @@ function CommentCard({ comment, replyDepth, projectId }) {
                           setOpenReplyBox(!openReplyBox);
                         }}
                       >
-                        Edit
+                        <div className="p-1 rounded-md hover:bg-gray-200">
+                          Edit
+                        </div>
                       </div>
                     </>
                   )}
@@ -278,8 +262,6 @@ function CommentCard({ comment, replyDepth, projectId }) {
               </div>
             </div>
           </form>
-
-          {/* )} */}
         </div>
         {comment?.replies.length > 0 && (
           <div

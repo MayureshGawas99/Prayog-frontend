@@ -10,6 +10,8 @@ import { Tooltip } from "react-tooltip";
 import AllProjectsPage from "./pages/AllProjectsPage";
 import { useContext, useEffect } from "react";
 import { AppContext } from "./context/AppContext";
+import EditProjectPage from "./pages/EditProjectPage";
+import AddProjectPage from "./pages/AddProjectPage";
 
 function App() {
   const { setActiveTab } = useContext(AppContext);
@@ -33,6 +35,8 @@ function App() {
         <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/projects" element={<AllProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />
+        <Route path="/projects/edit/:projectId" element={<EditProjectPage />} />
+        <Route path="/projects/create" element={<AddProjectPage />} />
       </Routes>
       <ToastContainer position="bottom-right" autoClose={3000} />
       <Tooltip id="my-tooltip" />

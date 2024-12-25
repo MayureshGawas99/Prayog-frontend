@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import CommentCard from "./CommentCard";
 import { toast } from "react-toastify";
-import axios from "axios";
 import Loading from "./Loading";
 import { AppContext } from "../context/AppContext";
 
@@ -17,20 +16,13 @@ function CommentSection({ project }) {
 
   const [currentPage, setCurrentPage] = useState(1);
   const {
-    jwt,
     user,
     fetchCommentsAgain,
     setFetchCommentsAgain,
     commentCount,
     setCommentCount,
+    commonAxios,
   } = useContext(AppContext);
-  const commonAxios = axios.create({
-    baseURL: process.env.REACT_APP_BACKEND_URL,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-  });
 
   const addComment = async (parent = null) => {
     try {

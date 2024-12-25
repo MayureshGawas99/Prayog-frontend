@@ -25,7 +25,6 @@ const RegisterPage = () => {
       );
       toast.success(data.message);
       navigate("/login");
-      console.log(data);
     } catch (error) {
       toast.error(error?.response?.data?.message);
       console.log(error);

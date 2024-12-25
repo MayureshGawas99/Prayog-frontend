@@ -18,7 +18,6 @@ const LoginPage = () => {
     try {
       setLoading(true);
       e.preventDefault();
-      console.log(email, password);
       const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/user/login`,
         { email, password }
@@ -26,7 +25,6 @@ const LoginPage = () => {
       toast.success("Login Successful");
       localStorage.setItem("jwt", data?.token);
       setJWT(data?.token);
-      console.log(data);
       navigate("/");
     } catch (error) {
       console.log(error);

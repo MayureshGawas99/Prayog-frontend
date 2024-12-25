@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -6,36 +5,32 @@ import { toast } from "react-toastify";
 import { FaHeart, FaRegCommentAlt } from "react-icons/fa";
 import Loading from "../components/Loading";
 import CommentSection from "../components/CommentSection";
-import { MdOutlineFileDownload } from "react-icons/md";
+import { MdOutlineFileDownload, MdEdit } from "react-icons/md";
+import DeleteProjectModal from "../modals/DeleteProjectModal";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
-  const { jwt } = useContext(AppContext);
+  const { user, commonAxios } = useContext(AppContext);
   const [project, setProject] = useState();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchRecentProjects = async () => {
+    const fetchSingleProject = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/project/single/${projectId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
+        const { data } = await commonAxios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/project/single/${projectId}`
         );
-        console.log(data);
         setProject(data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
+        navigate("/projects");
       } finally {
         setLoading(false);
       }
     };
-    fetchRecentProjects();
+    fetchSingleProject();
   }, []);
   return (
     <div className="flex-grow px-6 overflow-auto md:px-16 lg:px-32">
@@ -52,9 +47,22 @@ const ProjectPage = () => {
               className="object-cover w-[15rem] h-[15rem] md:w-[20rem] md:h-[20rem] rounded-xl "
             />
           </div>
-          <p className="my-4 text-2xl font-bold md:my-8 md:text-4xl line-clamp-1">
-            {project?.title}
-          </p>
+          <div className="flex items-center justify-between my-4 md:my-8">
+            <p className="text-2xl font-bold md:text-4xl line-clamp-1">
+              {project?.title}
+            </p>
+            {project?.admin?._id === user?._id && (
+              <div className="flex gap-2">
+                <div
+                  onClick={() => navigate(`/projects/edit/${project?._id}`)}
+                  className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300"
+                >
+                  <MdEdit size={20} className="text-indigo-600" />
+                </div>
+                <DeleteProjectModal projectId={project?._id} />
+              </div>
+            )}
+          </div>
           <p className="text-base text-justify text-gray-500 md:text-lg">
             {project?.description}
           </p>
@@ -129,18 +137,6 @@ const ProjectPage = () => {
                   .
                 </p>
               </object>
-
-              {/* <embed
-                src={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
-                type="application/pdf"
-                width="100%"
-                height="100%"
-              /> */}
-              {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                <Viewer
-                  fileUrl={`${process.env.REACT_APP_BACKEND_URL}/api/project/pdf/${projectId}`}
-                />
-              </Worker> */}
             </div>
           )}
 

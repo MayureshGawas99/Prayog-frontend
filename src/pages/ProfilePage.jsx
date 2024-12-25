@@ -3,12 +3,11 @@ import { AppContext } from "../context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdAdd, IoMdPersonAdd } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
-import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 
 const ProfilePage = () => {
-  const { jwt, user } = useContext(AppContext);
+  const { jwt, user, commonAxios } = useContext(AppContext);
   const [userProjects, setUserProjects] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
   const [userCollabProjects, setUserCollabProjects] = useState([]);
@@ -21,25 +20,20 @@ const ProfilePage = () => {
     if (!jwt) {
       navigate("/login");
     }
-  }, []);
+  }, [jwt]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/user/details/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
+        const { data } = await commonAxios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/user/details/${userId}`
         );
-        console.log(data);
         setUserDetails(data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
+        navigate("/");
       } finally {
         setLoading(false);
       }
@@ -52,18 +46,11 @@ const ProfilePage = () => {
     const fetchRecentProjects = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/project/user-projects/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
+        const { data } = await commonAxios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/project/user-projects/${userId}`
         );
-        console.log(data);
         setUserProjects(data?.projects);
         setUserCollabProjects(data?.collaboratedProjects);
-        console.log(data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -103,6 +90,7 @@ const ProfilePage = () => {
               {userDetails?._id === user?._id ? (
                 <button
                   type="button"
+                  onClick={() => navigate("/projects/create")}
                   className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
                 >
                   <span>Add Project</span>
@@ -158,7 +146,7 @@ const ProfilePage = () => {
                 {userProjects?.map((project) => (
                   <div
                     key={project._id}
-                    onClick={() => navigate(`/project/${project._id}`)}
+                    onClick={() => navigate(`/projects/${project._id}`)}
                     className="flex flex-row gap-4 p-4 mb-4 transition-transform ease-in-out transform border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg hover:scale-105"
                   >
                     <img
@@ -205,7 +193,7 @@ const ProfilePage = () => {
                 {userCollabProjects?.map((project) => (
                   <div
                     key={project._id}
-                    onClick={() => navigate(`/project/${project._id}`)}
+                    onClick={() => navigate(`/projects/${project._id}`)}
                     className="flex flex-row gap-4 p-4 mb-4 transition-transform ease-in-out transform border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg hover:scale-105"
                   >
                     <img

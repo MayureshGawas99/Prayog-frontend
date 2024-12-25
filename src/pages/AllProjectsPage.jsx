@@ -1,9 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaHeart, FaRegCommentAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 const AllProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,13 +14,14 @@ const AllProjectsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [fetchAgain, setFetchAgain] = useState(false);
+  const { commonAxios } = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecentProjects = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
+        const { data } = await commonAxios.get(
           `${process.env.REACT_APP_BACKEND_URL}/api/project?page=${currentPage}`
         );
         if (currentPage === 1) {
@@ -44,10 +45,9 @@ const AllProjectsPage = () => {
       event.preventDefault();
       setLoading(true);
       if (searchTerm) {
-        const { data } = await axios.get(
+        const { data } = await commonAxios.get(
           `${process.env.REACT_APP_BACKEND_URL}/api/project/search?searchTerm=${searchTerm}&filter=${selectedFilter}`
         );
-        console.log(data);
         setCurrentPage(1);
         setTotalPages(1);
         setFilteredProjects(data);
@@ -68,7 +68,6 @@ const AllProjectsPage = () => {
       <div className="my-8">
         <h1 className="mb-6 text-3xl font-bold text-gray-800">All Projects</h1>
 
-        {/* Search and Filter Section */}
         <div className="mb-6">
           <form className="max-w-md " onSubmit={handleSearch}>
             <div className="relative flex">
@@ -218,7 +217,6 @@ const AllProjectsPage = () => {
           </form>
         </div>
 
-        {/* Projects Grid */}
         {loading ? (
           <div className="flex items-center justify-center mb-8 ">
             <Loading color="indigo" />

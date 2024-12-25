@@ -1,17 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BsChatDotsFill } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
-import userIcon from "../assets/user.png";
 import { AppContext } from "../context/AppContext";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user, setUser, jwt, setJWT, activeTab } = useContext(AppContext);
+  const { user, setUser, jwt, setJWT, activeTab, commonAxios } =
+    useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -25,15 +23,9 @@ const NavBar = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/user/details/self`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
+        const { data } = await commonAxios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/user/details/self`
         );
-        console.log(data);
         setUser(data);
       } catch (error) {
         console.log(error);
@@ -75,7 +67,7 @@ const NavBar = () => {
                   <img
                     className="object-cover w-8 h-8 rounded-full"
                     src={user?.pic}
-                    alt="user photo"
+                    alt="user"
                   />
                 </button>
                 {/* Dropdown menu */}
@@ -107,12 +99,12 @@ const NavBar = () => {
                     </li>
 
                     <li>
-                      <a
+                      <div
                         onClick={handleSignOut}
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 "
                       >
                         Sign out
-                      </a>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -141,7 +133,6 @@ const NavBar = () => {
           >
             <span className="sr-only">Open main menu</span>
             <GiHamburgerMenu size={24} />
-            {/* <BsChatDotsFill size={24} /> */}
           </button>
         </div>
         <div
@@ -204,7 +195,7 @@ const NavBar = () => {
                   <img
                     className="object-cover w-8 h-8 rounded-full"
                     src={user?.pic}
-                    alt="user photo"
+                    alt="user"
                   />
                 </button>
                 {/* Dropdown menu */}
@@ -225,7 +216,6 @@ const NavBar = () => {
                   <ul className="py-2" aria-labelledby="user-menu-button">
                     <li>
                       <div
-                        // to={`/profile/${user?._id}`}
                         onClick={() => {
                           setIsProfileOpen(false);
                           navigate(`/profile/${user?._id}`);
@@ -237,12 +227,12 @@ const NavBar = () => {
                     </li>
 
                     <li>
-                      <a
+                      <div
                         onClick={handleSignOut}
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 "
                       >
                         Sign out
-                      </a>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -254,7 +244,6 @@ const NavBar = () => {
                 aria-expanded="false"
                 className=" text-gray-500  hover:bg-gray-200  focus:outline-none focus:ring-4 focus:ring-gray-200  rounded-lg text-sm p-2.5 "
               >
-                {/* <IoChatbubbleEllipsesOutline size={24} /> */}
                 <BsChatDotsFill size={24} />
                 <span className="sr-only">Search</span>
               </button>

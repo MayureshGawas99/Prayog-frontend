@@ -1,7 +1,7 @@
 // 1. Create a new file for your context, for example, MyContext.js
 
+import axios from "axios";
 import React, { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 // Create a context with a default value
 const AppContext = createContext();
@@ -12,8 +12,16 @@ const AppContextProvider = ({ children }) => {
   const [fetchCommentsAgain, setFetchCommentsAgain] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [jwt, setJWT] = useState(localStorage.getItem("jwt") || "");
+  const commonAxios = axios.create({
+    baseURL: process.env.REACT_APP_BACKEND_URL,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
   return (
     <AppContext.Provider
       value={{
@@ -27,6 +35,9 @@ const AppContextProvider = ({ children }) => {
         setCommentCount,
         activeTab,
         setActiveTab,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+        commonAxios,
       }}
     >
       {children}
