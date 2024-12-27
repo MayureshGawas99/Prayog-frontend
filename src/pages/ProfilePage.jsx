@@ -75,36 +75,49 @@ const ProfilePage = () => {
                 className="object-cover w-[20rem] h-[20rem] rounded-xl "
               />
             </div>
-            <div className="flex-grow">
+            <div className="flex-grow w-full">
               <div className="mb-2">
                 <div className="flex flex-row items-center justify-between">
                   <p className="text-2xl font-bold">{userDetails?.name}</p>
-                  {userDetails?._id === user?._id && (
+                  {userDetails?._id === user?._id ? (
                     <div className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300">
                       <MdEdit size={20} className="text-indigo-600" />
+                    </div>
+                  ) : (
+                    <div
+                      // onClick={(e) => {
+                      //   e.stopPropagation();
+                      //   handleSendConnectionRequest(user);
+                      // }}
+                      className="p-2 bg-indigo-200 border border-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-300"
+                    >
+                      <IoMdPersonAdd size={20} className="text-indigo-600" />
                     </div>
                   )}
                 </div>
                 <p className="text-indigo-600">{userDetails?.headline}</p>
               </div>
-              {userDetails?._id === user?._id ? (
-                <button
-                  type="button"
-                  onClick={() => navigate("/projects/create")}
-                  className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
-                >
-                  <span>Add Project</span>
-                  <IoMdAdd size={20} />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
-                >
-                  <span>Connect</span>
-                  <IoMdPersonAdd size={20} />
-                </button>
-              )}
+              {
+                userDetails?._id === user?._id && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/projects/create")}
+                    className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
+                  >
+                    <span>Add Project</span>
+                    <IoMdAdd size={20} />
+                  </button>
+                )
+                // : (
+                //   <button
+                //     type="button"
+                //     className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 focus:outline-none flex flex-row gap-2 "
+                //   >
+                //     <span>Connect</span>
+                //     <IoMdPersonAdd size={20} />
+                //   </button>
+                // )
+              }
               <div className="mb-2">
                 <p className="text-lg font-semibold">Email:</p>
                 <p className="text-gray-500">{userDetails?.email}</p>
@@ -134,7 +147,7 @@ const ProfilePage = () => {
                 )}
               </div>
             </div>
-            <div className="flex-grow">
+            <div className="flex-grow w-full">
               <div className="mb-2">
                 <p className="text-lg font-semibold">About:</p>
                 <p className="text-justify text-gray-500">

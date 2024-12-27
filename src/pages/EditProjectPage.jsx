@@ -344,13 +344,15 @@ const EditProjectPage = () => {
                           <img
                             src={collaborator?.pic}
                             alt="user pic"
-                            className="w-16 h-16 rounded-full "
+                            className="w-10 h-10 rounded-full md:w-16 md:h-16 "
                           />
                           <div>
-                            <p className="text-base font-semibold">
+                            <p className="text-sm font-semibold md:text-base">
                               {collaborator?.name}
                             </p>
-                            <p className="text-sm ">{collaborator?.email}</p>
+                            <p className="text-xs md:text-sm ">
+                              {collaborator?.email}
+                            </p>
                           </div>
                         </div>
                         <div
@@ -418,13 +420,13 @@ const EditProjectPage = () => {
                         <img
                           src={user?.pic}
                           alt="user pic"
-                          className="w-16 h-16 rounded-full "
+                          className="w-10 h-10 rounded-full md:w-16 md:h-16 "
                         />
                         <div>
-                          <p className="text-base font-semibold">
+                          <p className="text-sm font-semibold md:text-base">
                             {user?.name}
                           </p>
-                          <p className="text-sm ">{user?.email}</p>
+                          <p className="text-xs md:text-sm ">{user?.email}</p>
                         </div>
                       </div>
                       <div

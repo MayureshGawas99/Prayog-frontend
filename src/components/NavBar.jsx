@@ -18,7 +18,7 @@ const NavBar = () => {
     setUser(null);
     setJWT("");
     setIsProfileOpen(false);
-    navigate("/");
+    navigate("/login");
   };
   useEffect(() => {
     const fetchUserDetails = async () => {

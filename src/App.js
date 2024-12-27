@@ -12,10 +12,16 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "./context/AppContext";
 import EditProjectPage from "./pages/EditProjectPage";
 import AddProjectPage from "./pages/AddProjectPage";
+import ConnectionsPage from "./pages/ConnectionsPage";
 
 function App() {
   const { setActiveTab } = useContext(AppContext);
   const location = useLocation();
+  // useEffect(() => {
+  //   window.alert(
+  //     "This website's backend is hosted on a free instance. Please allow 3 to 4 minutes for the data to load. Thank you for your patience!"
+  //   );
+  // }, []);
   useEffect(() => {
     if (location.pathname === "/") {
       setActiveTab("home");
@@ -32,6 +38,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/connections" element={<ConnectionsPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/projects" element={<AllProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />

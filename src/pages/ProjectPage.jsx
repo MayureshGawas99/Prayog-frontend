@@ -48,9 +48,7 @@ const ProjectPage = () => {
             />
           </div>
           <div className="flex items-center justify-between my-4 md:my-8">
-            <p className="text-2xl font-bold md:text-4xl line-clamp-1">
-              {project?.title}
-            </p>
+            <p className="text-2xl font-bold md:text-4xl ">{project?.title}</p>
             {project?.admin?._id === user?._id && (
               <div className="flex gap-2">
                 <div
@@ -149,13 +147,13 @@ const ProjectPage = () => {
               <img
                 src={project?.admin?.pic}
                 alt="user pic"
-                className="w-16 h-16 rounded-full "
+                className="w-10 h-10 rounded-full md:w-16 md:h-16 "
               />
               <div>
-                <p className="text-base font-semibold">
+                <p className="text-sm font-semibold md:text-base">
                   {project?.admin?.name}
                 </p>
-                <p className="text-sm ">{project?.admin?.email}</p>
+                <p className="text-xs md:text-sm ">{project?.admin?.email}</p>
               </div>
             </div>
           </div>
@@ -172,13 +170,13 @@ const ProjectPage = () => {
                   <img
                     src={collaborator?.pic}
                     alt="user pic"
-                    className="w-16 h-16 rounded-full "
+                    className="w-10 h-10 rounded-full md:w-16 md:h-16 "
                   />
                   <div>
-                    <p className="text-base font-semibold">
+                    <p className="text-sm font-semibold md:text-base">
                       {collaborator?.name}
                     </p>
-                    <p className="text-sm ">{collaborator?.email}</p>
+                    <p className="text-xs md:text-sm ">{collaborator?.email}</p>
                   </div>
                 </div>
               ))}
