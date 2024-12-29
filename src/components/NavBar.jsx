@@ -111,12 +111,12 @@ const NavBar = () => {
               </div>
               <button
                 type="button"
+                onClick={() => navigate("/chat")}
                 data-collapse-toggle="navbar-search"
                 aria-controls="navbar-search"
                 aria-expanded="false"
                 className="md:hidden text-gray-500  hover:bg-gray-200  focus:outline-none focus:ring-4 focus:ring-gray-200  rounded-lg text-sm p-2.5 "
               >
-                {/* <IoChatbubbleEllipsesOutline size={24} /> */}
                 <BsChatDotsFill size={24} />
                 <span className="sr-only">Search</span>
               </button>
@@ -239,6 +239,7 @@ const NavBar = () => {
               </div>
               <button
                 type="button"
+                onClick={() => navigate("/chat")}
                 data-collapse-toggle="navbar-search"
                 aria-controls="navbar-search"
                 aria-expanded="false"

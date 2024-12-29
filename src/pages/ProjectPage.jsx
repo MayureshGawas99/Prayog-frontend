@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
-import { FaHeart, FaRegCommentAlt } from "react-icons/fa";
+import { FaHeart, FaRegCommentAlt, FaRegHeart } from "react-icons/fa";
 import Loading from "../components/Loading";
 import CommentSection from "../components/CommentSection";
 import { MdOutlineFileDownload, MdEdit } from "react-icons/md";
@@ -14,6 +14,38 @@ const ProjectPage = () => {
   const [project, setProject] = useState();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleLikeProject = async (like) => {
+    try {
+      // setLoading(true);
+      const { data } = await commonAxios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/project/like/${projectId}`
+      );
+      toast.success(data?.message);
+      if (like) {
+        //add user._id in likedby of project
+        let updatedlikedBy = [...project?.likedBy, user?._id];
+        setProject({
+          ...project,
+          likedBy: updatedlikedBy,
+          likeCount: updatedlikedBy.length,
+        });
+      } else {
+        //remove user._id from likedby of project
+        let updatedlikedBy = project?.likedBy.filter((id) => id !== user?._id);
+        setProject({
+          ...project,
+          likedBy: updatedlikedBy,
+          likeCount: updatedlikedBy.length,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      // setLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchSingleProject = async () => {
       try {
@@ -187,10 +219,22 @@ const ProjectPage = () => {
 
           <div className="flex flex-row justify-end gap-4 px-4 pb-2 mt-4 md:mt-8">
             <div className="flex flex-row items-center gap-1 cursor-pointer">
-              <FaHeart size={24} className="text-red-500" />
+              {project?.likedBy?.includes(user?._id) ? (
+                <FaHeart
+                  onClick={() => handleLikeProject(false)}
+                  size={24}
+                  className="text-red-500"
+                />
+              ) : (
+                <FaRegHeart
+                  onClick={() => handleLikeProject(true)}
+                  size={24}
+                  className="text-red-500"
+                />
+              )}
               <span className="text-gray-500 ">{project?.likeCount}</span>
             </div>
-            <div className="flex flex-row items-center gap-1 cursor-pointer">
+            <div className="flex flex-row items-center gap-1">
               <FaRegCommentAlt size={24} className="text-gray-500" />
               <span className="text-gray-500">
                 {project?.totalCommentCount}

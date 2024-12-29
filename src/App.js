@@ -13,6 +13,7 @@ import { AppContext } from "./context/AppContext";
 import EditProjectPage from "./pages/EditProjectPage";
 import AddProjectPage from "./pages/AddProjectPage";
 import ConnectionsPage from "./pages/ConnectionsPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   const { setActiveTab } = useContext(AppContext);
@@ -44,6 +45,7 @@ function App() {
         <Route path="/projects/:projectId" element={<ProjectPage />} />
         <Route path="/projects/edit/:projectId" element={<EditProjectPage />} />
         <Route path="/projects/create" element={<AddProjectPage />} />
+        <Route path="/chat" element={<ChatPage />} />
       </Routes>
       <ToastContainer position="bottom-right" autoClose={3000} />
       <Tooltip id="my-tooltip" />
