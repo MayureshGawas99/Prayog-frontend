@@ -14,6 +14,7 @@ import EditProjectPage from "./pages/EditProjectPage";
 import AddProjectPage from "./pages/AddProjectPage";
 import ConnectionsPage from "./pages/ConnectionsPage";
 import ChatPage from "./pages/ChatPage";
+import MobileChatPage from "./pages/MobileChatPage";
 
 function App() {
   const { setActiveTab } = useContext(AppContext);
@@ -45,7 +46,15 @@ function App() {
         <Route path="/projects/:projectId" element={<ProjectPage />} />
         <Route path="/projects/edit/:projectId" element={<EditProjectPage />} />
         <Route path="/projects/create" element={<AddProjectPage />} />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route
+          path="/chat"
+          element={
+            <>
+              <ChatPage />
+              <MobileChatPage />
+            </>
+          }
+        />
       </Routes>
       <ToastContainer position="bottom-right" autoClose={3000} />
       <Tooltip id="my-tooltip" />

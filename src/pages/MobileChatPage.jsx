@@ -1,26 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
 import { RiChatNewLine } from "react-icons/ri";
-import { IoMdClose, IoMdSend } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdClose, IoMdSend } from "react-icons/io";
 import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 import { getFullSender } from "../context/ChatLogic";
 import ScrollableChat from "../components/ScrollableChat";
 import { io } from "socket.io-client";
-import { FaEdit, FaInfo, FaUser } from "react-icons/fa";
+import { FaInfo, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { se } from "date-fns/locale";
-import { set } from "date-fns";
-import { MdEdit } from "react-icons/md";
+
 import GroupInfo from "../components/GroupInfo";
 
 let socket;
 
-const ChatPage = () => {
+const MobileChatPage = () => {
   const {
     commonAxios,
     user,
     jwt,
-
     selectedChat,
     setSelectedChat,
     selectedSender,
@@ -166,7 +163,6 @@ const ChatPage = () => {
       setMyChats(data);
     } catch (error) {
       console.log(error);
-      // toast.error(error.response?.data?.message || "Failed to fetch chats");
     }
   };
 
@@ -178,7 +174,6 @@ const ChatPage = () => {
       setMyGroupChats(data);
     } catch (error) {
       console.log(error);
-      // toast.error(error.response?.data?.message || "Failed to fetch chats");
     }
   };
 
@@ -191,7 +186,6 @@ const ChatPage = () => {
       console.log(data, "requests");
     } catch (error) {
       console.log(error);
-      // toast.error(error.response?.data?.message || "Failed to fetch chats");
     }
   };
 
@@ -218,7 +212,6 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.log(error);
-      // toast.error(error.response?.data?.message || "Failed to create chat");
       setSelectedSender(userData);
       setChatExist("no");
       console.log("no");
@@ -237,7 +230,6 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.log(error);
-      // toast.error(error.response?.data?.message || "Failed to create chat");
       setSelectedSender(adminData);
       setChatExist("no");
       console.log("no");
@@ -320,7 +312,6 @@ const ChatPage = () => {
         setMyChats([data, ...myChats]);
       setSelectedChat(data);
       setChatExist("yes");
-      // onClose();
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Failed to access chat");
@@ -336,7 +327,6 @@ const ChatPage = () => {
 
   const addUserToGroup = async (user) => {
     try {
-      //check if the user is in groupchatuser  array if not add it  else remove it from groupchatuser array
       const removedUser = groupChatUsers.filter((u) => u._id !== user._id);
       setGroupChatUsers([user, ...removedUser]);
     } catch (error) {
@@ -377,8 +367,179 @@ const ChatPage = () => {
   };
 
   const defaultPage = () => (
-    <div className="flex items-center justify-center w-full h-full text-lg font-bold">
-      Please select a chat to start messaging
+    <div className="flex flex-col h-full col-span-2 bg-white border-r border-gray-300">
+      <div className="flex items-center justify-between p-4 text-xl font-bold">
+        <p>Chats</p>
+        <span
+          onClick={() => {
+            setChatExist("group");
+          }}
+          className="p-2 rounded-full cursor-pointer hover:bg-gray-200"
+        >
+          <RiChatNewLine size={20} className="text-gray-500" />
+        </span>
+      </div>
+      <div className="px-4 mb-2">
+        <input
+          type="search"
+          value={searchUser}
+          onChange={(e) => setSearchUser(e.target.value)}
+          placeholder="Search Users"
+          className="w-full px-4 py-2 text-sm border rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+      <div className="px-4 mb-2">
+        <span
+          onClick={() => {
+            setDebouncedSearch("");
+            setSearchUser("");
+            setTab("all");
+          }}
+          className={
+            tab === "all"
+              ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+              : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+          }
+        >
+          All
+        </span>
+        <span
+          onClick={() => {
+            setDebouncedSearch("");
+            setSearchUser("");
+            setTab("groups");
+          }}
+          className={
+            tab === "groups"
+              ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+              : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+          }
+        >
+          Groups
+        </span>
+        <span
+          onClick={() => {
+            setDebouncedSearch("");
+            setSearchUser("");
+            setTab("requests");
+          }}
+          className={
+            tab === "requests"
+              ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+              : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
+          }
+        >
+          Requests
+        </span>
+      </div>
+      <div className="flex-grow h-0 overflow-auto">
+        {searchResults.length > 0
+          ? searchResults.map((user) => {
+              return (
+                <div
+                  key={user._id}
+                  onClick={() => {
+                    if (chatExist === "group") {
+                      addUserToGroup(user);
+                    } else {
+                      handleNewChat(user);
+                    }
+                  }}
+                  className={`p-4 cursor-pointer ${
+                    selectedChat?._id === user._id ? "bg-gray-200" : ""
+                  } hover:bg-gray-200`}
+                >
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={user?.pic}
+                      alt=""
+                      className="rounded-full w-14 h-14"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          : tabChats.map((chat) => {
+              const sender = getFullSender(user, chat.users);
+              if (chat?.isGroupChat) {
+                return (
+                  <div
+                    key={chat._id}
+                    onClick={() => {
+                      setSelectedChat(chat);
+                      handleNewGroupChat(chat, chat?.groupAdmin);
+                    }}
+                    className={`p-4 cursor-pointer ${
+                      selectedChat?._id === chat._id ? "bg-gray-200" : ""
+                    } hover:bg-gray-200`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={
+                          "https://cdn6.aptoide.com/imgs/1/2/2/1221bc0bdd2354b42b293317ff2adbcf_icon.png"
+                        }
+                        alt=""
+                        className="rounded-full w-14 h-14"
+                      />
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {chat?.chatName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          members: {chat?.users?.length}
+                        </p>
+                        <p className="text-xs text-gray-500 line-clamp-1">
+                          {chat?.latestMessage?.sender?._id === user?._id
+                            ? "you"
+                            : chat?.latestMessage?.sender?.name}
+                          : {chat?.latestMessage?.content}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={chat._id}
+                  onClick={() => {
+                    if (chatExist === "group") {
+                      addUserToGroup(sender);
+                    } else {
+                      setSelectedChat(chat);
+                      handleNewChat(sender);
+                    }
+                  }}
+                  className={`p-4 cursor-pointer ${
+                    selectedChat?._id === chat._id ? "bg-gray-200" : ""
+                  } hover:bg-gray-200`}
+                >
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={sender?.pic}
+                      alt=""
+                      className="rounded-full w-14 h-14"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold">{sender?.name}</p>
+                      <p className="text-xs text-gray-500">{sender?.email}</p>
+                      <p className="text-xs text-gray-500 line-clamp-1">
+                        {chat?.latestMessage?.sender?._id === user?._id
+                          ? "you"
+                          : chat?.latestMessage?.sender?.name}
+                        : {chat?.latestMessage?.content}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+      </div>
     </div>
   );
   const chatExistPage = () =>
@@ -386,7 +547,14 @@ const ChatPage = () => {
       <>
         {selectedChat?.isGroupChat ? (
           <div className="flex items-center justify-between px-4 py-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-row items-center gap-2">
+              <IoMdArrowRoundBack
+                size={24}
+                onClick={() => {
+                  setChatExist("default");
+                }}
+                className="text-gray-500 cursor-pointer"
+              />
               <img
                 src={
                   "https://cdn6.aptoide.com/imgs/1/2/2/1221bc0bdd2354b42b293317ff2adbcf_icon.png"
@@ -422,8 +590,16 @@ const ChatPage = () => {
             )}
           </div>
         ) : (
-          <div className="flex items-center justify-between px-4 py-2">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between px-4 py-2 ">
+            <div className="flex flex-row items-center gap-2">
+              <IoMdArrowRoundBack
+                size={24}
+                onClick={() => {
+                  setChatExist("default");
+                }}
+                className="text-gray-500 cursor-pointer"
+              />
+
               <img
                 src={selectedSender?.pic}
                 alt=""
@@ -639,6 +815,7 @@ const ChatPage = () => {
             </div>
           </div>
         )}
+
         <GroupInfo chat={selectedChat} />
       </>
     );
@@ -652,192 +829,12 @@ const ChatPage = () => {
     groupInfo: groupInfoPage(),
   };
   return (
-    <div className="flex-grow hidden h-full px-6 py-8 bg-gray-100 lg:flex md:px-16 lg:px-8">
-      <div className="flex-grow h-full border border-gray-300 lg:grid lg:grid-cols-6 ">
-        <div className="flex flex-col h-full col-span-2 bg-white border-r border-gray-300">
-          <div className="flex items-center justify-between p-4 text-xl font-bold">
-            <p>Chats</p>
-            <span
-              onClick={() => {
-                setChatExist("group");
-              }}
-              className="p-2 rounded-full cursor-pointer hover:bg-gray-200"
-            >
-              <RiChatNewLine size={20} className="text-gray-500" />
-            </span>
-          </div>
-          <div className="px-4 mb-2">
-            <input
-              type="search"
-              value={searchUser}
-              onChange={(e) => setSearchUser(e.target.value)}
-              placeholder="Search Users"
-              className="w-full px-4 py-2 text-sm border rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div className="px-4 mb-2">
-            <span
-              onClick={() => {
-                setDebouncedSearch("");
-                setSearchUser("");
-                setTab("all");
-              }}
-              className={
-                tab === "all"
-                  ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-                  : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-              }
-            >
-              All
-            </span>
-            <span
-              onClick={() => {
-                setDebouncedSearch("");
-                setSearchUser("");
-                setTab("groups");
-              }}
-              className={
-                tab === "groups"
-                  ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-                  : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-              }
-            >
-              Groups
-            </span>
-            <span
-              onClick={() => {
-                setDebouncedSearch("");
-                setSearchUser("");
-                setTab("requests");
-              }}
-              className={
-                tab === "requests"
-                  ? "cursor-pointer inline-block bg-green-100 text-green-800 border border-green-800 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-                  : "cursor-pointer inline-block bg-gray-100 text-gray-800 hover:border hover:border-gray-800 hover:bg-gray-200 text-sm font-semibold mr-2 px-4 py-1.5 rounded-full"
-              }
-            >
-              Requests
-            </span>
-          </div>
-          <div className="flex-grow h-0 overflow-auto">
-            {searchResults.length > 0
-              ? searchResults.map((user) => {
-                  return (
-                    <div
-                      key={user._id}
-                      onClick={() => {
-                        if (chatExist === "group") {
-                          addUserToGroup(user);
-                        } else {
-                          handleNewChat(user);
-                        }
-                      }}
-                      className={`p-4 cursor-pointer ${
-                        selectedChat?._id === user._id ? "bg-gray-200" : ""
-                      } hover:bg-gray-200`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={user?.pic}
-                          alt=""
-                          className="rounded-full w-14 h-14"
-                        />
-                        <div>
-                          <p className="text-sm font-semibold">{user?.name}</p>
-                          <p className="text-xs text-gray-500">{user?.email}</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              : tabChats.map((chat) => {
-                  const sender = getFullSender(user, chat.users);
-                  if (chat?.isGroupChat) {
-                    return (
-                      <div
-                        key={chat._id}
-                        onClick={() => {
-                          setSelectedChat(chat);
-                          handleNewGroupChat(chat, chat?.groupAdmin);
-                        }}
-                        className={`p-4 cursor-pointer ${
-                          selectedChat?._id === chat._id ? "bg-gray-200" : ""
-                        } hover:bg-gray-200`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={
-                              "https://cdn6.aptoide.com/imgs/1/2/2/1221bc0bdd2354b42b293317ff2adbcf_icon.png"
-                            }
-                            alt=""
-                            className="rounded-full w-14 h-14"
-                          />
-                          <div>
-                            <p className="text-sm font-semibold">
-                              {chat?.chatName}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              members: {chat?.users?.length}
-                            </p>
-                            <p className="text-xs text-gray-500 line-clamp-1">
-                              {chat?.latestMessage?.sender?._id === user?._id
-                                ? "you"
-                                : chat?.latestMessage?.sender?.name}
-                              : {chat?.latestMessage?.content}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div
-                      key={chat._id}
-                      onClick={() => {
-                        if (chatExist === "group") {
-                          addUserToGroup(sender);
-                        } else {
-                          setSelectedChat(chat);
-                          handleNewChat(sender);
-                        }
-                      }}
-                      className={`p-4 cursor-pointer ${
-                        selectedChat?._id === chat._id ? "bg-gray-200" : ""
-                      } hover:bg-gray-200`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={sender?.pic}
-                          alt=""
-                          className="rounded-full w-14 h-14"
-                        />
-                        <div>
-                          <p className="text-sm font-semibold">
-                            {sender?.name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {sender?.email}
-                          </p>
-                          <p className="text-xs text-gray-500 line-clamp-1">
-                            {chat?.latestMessage?.sender?._id === user?._id
-                              ? "you"
-                              : chat?.latestMessage?.sender?.name}
-                            : {chat?.latestMessage?.content}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-          </div>
-        </div>
-        <div className="flex flex-col h-full col-span-4 bg-gray-200">
-          {tabs[chatExist]}
-        </div>
+    <div className="flex flex-grow h-full px-6 py-8 bg-gray-100 lg:hidden md:px-16 lg:px-8">
+      <div className="flex flex-col w-full h-full bg-gray-200">
+        {tabs[chatExist]}
       </div>
     </div>
   );
 };
 
-export default ChatPage;
+export default MobileChatPage;
