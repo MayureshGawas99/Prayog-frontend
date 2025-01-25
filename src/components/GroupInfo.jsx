@@ -147,13 +147,12 @@ const GroupInfo = ({ chat }) => {
       <div className="flex items-center gap-2">
         {chat?.groupAdmin?._id === user?._id ? (
           <>
-            <button
+            {/* <button
               type="button"
-              // onClick={leaveGroup}
               className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
             >
               Add Members
-            </button>
+            </button> */}
             <button
               type="button"
               onClick={deleteGroup}

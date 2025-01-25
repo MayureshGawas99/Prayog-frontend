@@ -13,7 +13,7 @@ import { set } from "date-fns";
 import { MdEdit } from "react-icons/md";
 import GroupInfo from "../components/GroupInfo";
 
-let socket;
+// let socket;
 
 const ChatPage = () => {
   const {
@@ -57,6 +57,8 @@ const ChatPage = () => {
     setGroupChatUsers,
     fetchChatsAgain,
     setFetchChatsAgain,
+    socket,
+    setSocket,
   } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -107,16 +109,17 @@ const ChatPage = () => {
   }, [debouncedSearch]);
 
   useEffect(() => {
-    socket = io(process.env.REACT_APP_BACKEND_URL);
+    const soc = io(process.env.REACT_APP_BACKEND_URL);
+    setSocket(soc);
     return () => {
       // Cleanup socket connection on unmount
-      socket.disconnect();
+      socket?.disconnect();
     };
   }, []);
 
   useEffect(() => {
     if (user) {
-      socket.emit("setup", user);
+      socket?.emit("setup", user);
     }
     // socket.on("connected", () => setSocketConnected(true));
   }, [user]);
@@ -125,12 +128,12 @@ const ChatPage = () => {
     if (selectedChat) {
       setSelectedSender(getFullSender(user, selectedChat.users));
       fetchMessages();
-      socket.emit("join chat", selectedChat._id);
+      socket?.emit("join chat", selectedChat._id);
     }
   }, [selectedChat]);
 
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
+    socket?.on("message received", (newMessageReceived) => {
       if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id) {
         // Notify the user if the message is for a different chat
         if (!notification.find((n) => n._id === newMessageReceived._id)) {
@@ -142,7 +145,7 @@ const ChatPage = () => {
     });
 
     return () => {
-      socket.off("message received");
+      socket?.off("message received");
     };
   }, [selectedChat, notification]);
 
@@ -256,7 +259,7 @@ const ChatPage = () => {
         `${process.env.REACT_APP_BACKEND_URL}/api/message`,
         { content: message, chatId: selectedChat }
       );
-      socket.emit("new message", data);
+      socket?.emit("new message", data);
       setMessages((prevMessages) => [...prevMessages, data]);
       setMessage("");
     } catch (error) {

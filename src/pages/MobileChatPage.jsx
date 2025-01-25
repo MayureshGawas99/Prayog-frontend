@@ -8,10 +8,7 @@ import ScrollableChat from "../components/ScrollableChat";
 import { io } from "socket.io-client";
 import { FaInfo, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
 import GroupInfo from "../components/GroupInfo";
-
-let socket;
 
 const MobileChatPage = () => {
   const {
@@ -32,15 +29,12 @@ const MobileChatPage = () => {
     setMessage,
     messages,
     setMessages,
-    notification,
-    setNotification,
     searchUser,
     setSearchUser,
     debouncedSearch,
     setDebouncedSearch,
     searchResults,
     setSearchResults,
-    searchLoading,
     setSearchLoading,
     chatExist,
     setChatExist,
@@ -53,7 +47,7 @@ const MobileChatPage = () => {
     groupChatUsers,
     setGroupChatUsers,
     fetchChatsAgain,
-    setFetchChatsAgain,
+    socket,
   } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -102,46 +96,6 @@ const MobileChatPage = () => {
       setSearchResults([]);
     }
   }, [debouncedSearch]);
-
-  useEffect(() => {
-    socket = io(process.env.REACT_APP_BACKEND_URL);
-    return () => {
-      // Cleanup socket connection on unmount
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      socket.emit("setup", user);
-    }
-    // socket.on("connected", () => setSocketConnected(true));
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedChat) {
-      setSelectedSender(getFullSender(user, selectedChat.users));
-      fetchMessages();
-      socket.emit("join chat", selectedChat._id);
-    }
-  }, [selectedChat]);
-
-  useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id) {
-        // Notify the user if the message is for a different chat
-        if (!notification.find((n) => n._id === newMessageReceived._id)) {
-          setNotification([newMessageReceived, ...notification]);
-        }
-      } else {
-        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-      }
-    });
-
-    return () => {
-      socket.off("message received");
-    };
-  }, [selectedChat, notification]);
 
   const fetchMessages = async () => {
     try {
@@ -248,7 +202,7 @@ const MobileChatPage = () => {
         `${process.env.REACT_APP_BACKEND_URL}/api/message`,
         { content: message, chatId: selectedChat }
       );
-      socket.emit("new message", data);
+      socket?.emit("new message", data);
       setMessages((prevMessages) => [...prevMessages, data]);
       setMessage("");
     } catch (error) {
@@ -597,17 +551,19 @@ const MobileChatPage = () => {
                 onClick={() => {
                   setChatExist("default");
                 }}
-                className="text-gray-500 cursor-pointer"
+                className="flex-shrink-0 text-gray-500 cursor-pointer"
               />
 
               <img
                 src={selectedSender?.pic}
                 alt=""
-                className="rounded-full w-14 h-14"
+                className="w-10 h-10 rounded-full"
               />
               <div>
-                <p className="font-semibold">{selectedSender?.name}</p>
-                <p className="text-sm text-gray-400">{selectedSender?.email}</p>
+                <p className="text-sm font-semibold">{selectedSender?.name}</p>
+                <p className="text-xs text-gray-400 line-clamp-1">
+                  {selectedSender?.email}
+                </p>
               </div>
             </div>
             <div

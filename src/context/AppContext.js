@@ -41,6 +41,7 @@ const AppContextProvider = ({ children }) => {
   const [groupChatName, setGroupChatName] = useState("");
   const [groupChatUsers, setGroupChatUsers] = useState([]);
   const [fetchChatsAgain, setFetchChatsAgain] = useState(false);
+  const [socket, setSocket] = useState();
 
   return (
     <AppContext.Provider
@@ -94,6 +95,8 @@ const AppContextProvider = ({ children }) => {
         setGroupChatUsers,
         fetchChatsAgain,
         setFetchChatsAgain,
+        socket,
+        setSocket,
       }}
     >
       {children}

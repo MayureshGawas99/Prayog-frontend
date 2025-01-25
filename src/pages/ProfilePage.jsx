@@ -40,7 +40,7 @@ const ProfilePage = () => {
     };
 
     fetchUserDetails();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const fetchRecentProjects = async () => {
@@ -58,7 +58,7 @@ const ProfilePage = () => {
       }
     };
     fetchRecentProjects();
-  }, []);
+  }, [userId]);
   return (
     <div className="flex-grow px-6 overflow-auto md:px-16 lg:px-32">
       {loading ? (
